@@ -23,9 +23,17 @@ const entitlementsPlist = `<?xml version="1.0" encoding="UTF-8"?>
   </dict>
 </plist>`
 
-// Notarize notarizes the app at appPath using the given email, developerName, teamID, and appPassword.
+// NotarizeOptions represents options for Notarize.
+type NotarizeOptions struct {
+	Email         string
+	DeveloperName string
+	TeamID        string
+	AppPassword   string
+}
+
+// Notarize notarizes the app at appPath using the given options.
 // appPath is the file path to .app directory.
-func Notarize(appPath, email, developerName, teamID, appPassword string) error {
+func Notarize(appPath string, options *NotarizeOptions) error {
 	tmp, err := os.MkdirTemp("", "")
 	if err != nil {
 		return err
@@ -43,7 +51,7 @@ func Notarize(appPath, email, developerName, teamID, appPassword string) error {
 			"--display",
 			"--verbose",
 			"--verify",
-			"--sign", developerName,
+			"--sign", options.DeveloperName,
 			"--timestamp",
 			"--options", "runtime",
 			"--force",
@@ -73,9 +81,9 @@ func Notarize(appPath, email, developerName, teamID, appPassword string) error {
 	// Notarize the app.
 	{
 		cmd := exec.Command("xcrun", "notarytool", "submit", zippath,
-			"--apple-id", email,
-			"--password", appPassword,
-			"--team-id", teamID,
+			"--apple-id", options.Email,
+			"--password", options.AppPassword,
+			"--team-id", options.TeamID,
 			"--wait")
 		var buf bytes.Buffer
 		cmd.Stdout = os.Stdout
