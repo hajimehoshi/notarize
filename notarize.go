@@ -26,10 +26,18 @@ const entitlementsPlist = `<?xml version="1.0" encoding="UTF-8"?>
 
 // NotarizeOptions represents options for Notarize.
 type NotarizeOptions struct {
-	Email         string
+	// Email is the email address for the Apple ID.
+	Email string
+
+	// DeveloperName is the developer name.
 	DeveloperName string
-	TeamID        string
-	AppPassword   string
+
+	// TeamID is the team ID.
+	TeamID string
+
+	// AppPassword is the app-specific password.
+	// See https://support.apple.com/en-us/102654 for details.
+	AppPassword string
 
 	// ProgressOutput is the output for progress.
 	// If ProgressOutput is nil, the output is discarded.
