@@ -7,6 +7,7 @@ package notarize
 import (
 	"bytes"
 	"fmt"
+	"io"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -29,6 +30,10 @@ type NotarizeOptions struct {
 	DeveloperName string
 	TeamID        string
 	AppPassword   string
+
+	// ProgressOutput is the output for progress.
+	// If ProgressOutput is nil, the output is discarded.
+	ProgressOutput io.Writer
 }
 
 // Notarize notarizes the app at appPath using the given options.
@@ -86,7 +91,7 @@ func Notarize(appPath string, options *NotarizeOptions) error {
 			"--team-id", options.TeamID,
 			"--wait")
 		var buf bytes.Buffer
-		cmd.Stdout = os.Stdout
+		cmd.Stdout = options.ProgressOutput
 		cmd.Stderr = &buf
 		if err := cmd.Run(); err != nil {
 			return fmt.Errorf("notarize: xcrun notarytool failed: %w: %s", err, buf.String())
@@ -97,7 +102,7 @@ func Notarize(appPath string, options *NotarizeOptions) error {
 	{
 		cmd := exec.Command("xcrun", "stapler", "staple", appPath)
 		var buf bytes.Buffer
-		cmd.Stdout = os.Stdout
+		cmd.Stdout = options.ProgressOutput
 		cmd.Stderr = &buf
 		if err := cmd.Run(); err != nil {
 			return fmt.Errorf("notarize: xcrun stapler failed: %w: %s", err, buf.String())
