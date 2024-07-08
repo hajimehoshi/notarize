@@ -26,8 +26,8 @@ const entitlementsPlist = `<?xml version="1.0" encoding="UTF-8"?>
 
 // NotarizeOptions represents options for Notarize.
 type NotarizeOptions struct {
-	// Email is the email address for the Apple ID.
-	Email string
+	// AppleID is the apple ID.
+	AppleID string
 
 	// DeveloperName is the developer name.
 	DeveloperName string
@@ -94,7 +94,7 @@ func Notarize(appPath string, options *NotarizeOptions) error {
 	// Notarize the app.
 	{
 		cmd := exec.Command("xcrun", "notarytool", "submit", zippath,
-			"--apple-id", options.Email,
+			"--apple-id", options.AppleID,
 			"--password", options.AppPassword,
 			"--team-id", options.TeamID,
 			"--wait")
