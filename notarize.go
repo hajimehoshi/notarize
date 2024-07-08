@@ -29,8 +29,9 @@ type NotarizeOptions struct {
 	// AppleID is the apple ID.
 	AppleID string
 
-	// DeveloperName is the developer name.
-	DeveloperName string
+	// SigningIdentity is the signing identity.
+	// You can see identities by running `security find-identity -v -p codesigning`.
+	SigningIdentity string
 
 	// TeamID is the team ID.
 	TeamID string
@@ -64,7 +65,7 @@ func Notarize(appPath string, options *NotarizeOptions) error {
 			"--display",
 			"--verbose",
 			"--verify",
-			"--sign", options.DeveloperName,
+			"--sign", options.SigningIdentity,
 			"--timestamp",
 			"--options", "runtime",
 			"--force",
